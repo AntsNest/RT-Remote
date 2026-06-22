@@ -547,7 +547,7 @@ unix:!macx: {
 win32 {
     RC_ICONS = moonlight.ico
     QMAKE_TARGET_COMPANY = AntsNest
-    QMAKE_TARGET_DESCRIPTION = RT Remote — 저지연 실시간 원격제어 (Moonlight 기반)
+    QMAKE_TARGET_DESCRIPTION = RT Remote - Low Latency Remote Desktop (by AntsNest)
     QMAKE_TARGET_PRODUCT = RT Remote
 
     CONFIG -= embed_manifest_exe
