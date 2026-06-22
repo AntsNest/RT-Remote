@@ -424,8 +424,9 @@ int main(int argc, char *argv[])
 {
     SDL_SetMainReady();
 
-    // RT Remote 딥링크: rtremote://<host>[/<app>] 로 실행되면 stream 명령으로 변환
-    // (브라우저/콘솔의 "원클릭 접속" → 이 스킴으로 클라이언트가 바로 스트리밍 시작)
+    // RT Remote 딥링크:
+    //   rtremote://<host>[/<app>]      → stream (바로 접속)
+    //   rtremote://<host>?pin=<4자리>   → pair --pin (PIN 자동 페어링, 입력 0회)
     static std::vector<std::string> s_rtArgs;
     static std::vector<char*> s_rtArgv;
     if (argc >= 2) {
@@ -433,6 +434,16 @@ int main(int argc, char *argv[])
         const std::string scheme = "rtremote://";
         if (a1.size() > scheme.size() && a1.compare(0, scheme.size(), scheme) == 0) {
             std::string rest = a1.substr(scheme.size());
+            // 쿼리(?pin=) 분리
+            std::string query, pin;
+            auto qpos = rest.find('?');
+            if (qpos != std::string::npos) { query = rest.substr(qpos + 1); rest = rest.substr(0, qpos); }
+            auto pinpos = query.find("pin=");
+            if (pinpos != std::string::npos) {
+                std::string raw = query.substr(pinpos + 4);
+                auto amp = raw.find('&'); if (amp != std::string::npos) raw = raw.substr(0, amp);
+                for (char c : raw) if (c >= '0' && c <= '9') pin += c;
+            }
             while (!rest.empty() && (rest.back() == '/' || rest.back() == '\r' || rest.back() == '\n')) rest.pop_back();
             std::string host = rest, appName = "Desktop";
             auto slash = rest.find('/');
@@ -442,7 +453,11 @@ int main(int argc, char *argv[])
                 if (appName.empty()) appName = "Desktop";
             }
             if (!host.empty()) {
-                s_rtArgs = { std::string(argv[0]), "stream", host, appName };
+                if (!pin.empty()) {
+                    s_rtArgs = { std::string(argv[0]), "pair", host, "--pin", pin };
+                } else {
+                    s_rtArgs = { std::string(argv[0]), "stream", host, appName };
+                }
                 for (auto& s : s_rtArgs) s_rtArgv.push_back(const_cast<char*>(s.c_str()));
                 argc = static_cast<int>(s_rtArgv.size());
                 argv = s_rtArgv.data();
