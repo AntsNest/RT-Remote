@@ -96,9 +96,9 @@ CenteredGridView {
         Label {
             height: searchSpinner.height
             elide: Label.ElideRight
-            text: StreamingPreferences.enableMdns ? qsTr("Searching for compatible hosts on your local network...")
-                                                  : qsTr("Automatic PC discovery is disabled. Add your PC manually.")
-            font.pointSize: 20
+            text: StreamingPreferences.enableMdns ? qsTr("로컬 네트워크 검색 중… VPC 호스트는 우측 상단 ‘+’로 가상 IP(예: 100.77.x.x)를 추가하세요.")
+                                                  : qsTr("우측 상단 ‘+’ 를 눌러 호스트의 IP(가상 IP)로 PC를 추가하세요.")
+            font.pointSize: 16
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.Wrap
         }

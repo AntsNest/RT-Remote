@@ -1001,18 +1001,15 @@ int main(int argc, char *argv[])
     // Our icons are styled for a dark theme, so we do not allow the user to override this
     qputenv("QT_QUICK_CONTROLS_MATERIAL_THEME", "Dark");
 
-    // These are defaults that we allow the user to override
+    // RT Remote 브랜딩 — AntsNest 블루 액센트/프라이머리
     if (!qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MATERIAL_ACCENT")) {
-        qputenv("QT_QUICK_CONTROLS_MATERIAL_ACCENT", "Purple");
+        qputenv("QT_QUICK_CONTROLS_MATERIAL_ACCENT", "#0066FF");
     }
     if (!qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MATERIAL_VARIANT")) {
         qputenv("QT_QUICK_CONTROLS_MATERIAL_VARIANT", "Dense");
     }
     if (!qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MATERIAL_PRIMARY")) {
-        // Qt 6.9 began to use a different shade of Material.Indigo when we use a dark theme
-        // (which is all the time). The new color looks washed out, so manually specify the
-        // old primary color unless the user overrides it themselves.
-        qputenv("QT_QUICK_CONTROLS_MATERIAL_PRIMARY", "#3F51B5");
+        qputenv("QT_QUICK_CONTROLS_MATERIAL_PRIMARY", "#0066FF");
     }
 
     QQmlApplicationEngine engine;
