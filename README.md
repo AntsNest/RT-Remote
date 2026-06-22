@@ -1,4 +1,14 @@
-# Moonlight PC
+# RT Remote (by AntsNest)
+
+> **RT Remote** 은 AntsNest **SkynetManager** 의 저지연 실시간 원격제어 클라이언트입니다.
+> 오픈소스 [Moonlight](https://moonlight-stream.org) (GPLv3) 를 포크해 브랜딩한 것으로, [Sunshine](https://github.com/LizardByte/Sunshine) 호스트에 접속합니다.
+> SkynetManager의 **RT Remote** 메뉴에서 VPC 호스트에 Sunshine을 설치·페어링한 뒤 이 클라이언트로 접속하세요.
+>
+> 딥링크: `rtremote://<호스트IP>` 또는 `rtremote://<호스트IP>/<앱>` 로 실행하면 바로 스트리밍이 시작됩니다.
+>
+> *Upstream 라이선스(GPLv3) 및 저작권 고지를 그대로 따릅니다.*
+
+---
 
 [Moonlight PC](https://moonlight-stream.org) is an open source PC client for NVIDIA GameStream and [Sunshine](https://github.com/LizardByte/Sunshine).
 

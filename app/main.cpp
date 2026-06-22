@@ -13,6 +13,8 @@
 #include <QElapsedTimer>
 #include <QTemporaryFile>
 #include <QRegularExpression>
+#include <string>
+#include <vector>
 
 #ifdef Q_OS_UNIX
 #include <sys/socket.h>
@@ -422,15 +424,41 @@ int main(int argc, char *argv[])
 {
     SDL_SetMainReady();
 
+    // RT Remote 딥링크: rtremote://<host>[/<app>] 로 실행되면 stream 명령으로 변환
+    // (브라우저/콘솔의 "원클릭 접속" → 이 스킴으로 클라이언트가 바로 스트리밍 시작)
+    static std::vector<std::string> s_rtArgs;
+    static std::vector<char*> s_rtArgv;
+    if (argc >= 2) {
+        std::string a1(argv[1]);
+        const std::string scheme = "rtremote://";
+        if (a1.size() > scheme.size() && a1.compare(0, scheme.size(), scheme) == 0) {
+            std::string rest = a1.substr(scheme.size());
+            while (!rest.empty() && (rest.back() == '/' || rest.back() == '\r' || rest.back() == '\n')) rest.pop_back();
+            std::string host = rest, appName = "Desktop";
+            auto slash = rest.find('/');
+            if (slash != std::string::npos) {
+                host = rest.substr(0, slash);
+                appName = rest.substr(slash + 1);
+                if (appName.empty()) appName = "Desktop";
+            }
+            if (!host.empty()) {
+                s_rtArgs = { std::string(argv[0]), "stream", host, appName };
+                for (auto& s : s_rtArgs) s_rtArgv.push_back(const_cast<char*>(s.c_str()));
+                argc = static_cast<int>(s_rtArgv.size());
+                argv = s_rtArgv.data();
+            }
+        }
+    }
+
     // Set the app version for the QCommandLineParser's showVersion() command
     QCoreApplication::setApplicationVersion(VERSION_STR);
 
     // Set these here to allow us to use the default QSettings constructor.
     // These also ensure that our cache directory is named correctly. As such,
     // it is critical that these be called before Path::initialize().
-    QCoreApplication::setOrganizationName("Moonlight Game Streaming Project");
-    QCoreApplication::setOrganizationDomain("moonlight-stream.com");
-    QCoreApplication::setApplicationName("Moonlight");
+    QCoreApplication::setOrganizationName("AntsNest");
+    QCoreApplication::setOrganizationDomain("antsnest.co.kr");
+    QCoreApplication::setApplicationName("RT Remote");
 
     if (QFile(QDir::currentPath() + "/portable.dat").exists()) {
         QSettings::setDefaultFormat(QSettings::IniFormat);
@@ -715,8 +743,8 @@ int main(int argc, char *argv[])
     // Set our app name for SDL to use with PulseAudio and PipeWire. This matches what we
     // provide as our app name to libsoundio too. On SDL 2.0.18+, SDL_APP_NAME is also used
     // for screensaver inhibitor reporting.
-    SDL_SetHint(SDL_HINT_AUDIO_DEVICE_APP_NAME, "Moonlight");
-    SDL_SetHint(SDL_HINT_APP_NAME, "Moonlight");
+    SDL_SetHint(SDL_HINT_AUDIO_DEVICE_APP_NAME, "RT Remote");
+    SDL_SetHint(SDL_HINT_APP_NAME, "RT Remote");
 
     // We handle capturing the mouse ourselves when it leaves the window, so we don't need
     // SDL doing it for us behind our backs.
