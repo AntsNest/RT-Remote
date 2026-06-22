@@ -9,6 +9,12 @@ on:
       ci_version:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      ci_version:
+        required: false
+        default: "99.99.99.99"
+        type: string
 
 jobs:
   build:
@@ -21,9 +27,9 @@ jobs:
           # Windows
           - os: windows-2025
             qt_version: 6.11.1
-          # macOS
-          - os: macos-26
-            qt_version: 6.11.1
+          # macOS (RT Remote: 비용 절감 위해 dispatch 빌드에서 제외 — 필요 시 복원)
+          # - os: macos-26
+          #   qt_version: 6.11.1
 
     runs-on: ${{ matrix.os }}
 
